@@ -411,6 +411,31 @@
         .dashboard-header {
             text-align: center;
             margin-bottom: 48px;
+            position: relative;
+        }
+
+        .back-to-client-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.1s;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-to-client-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0px rgba(255, 255, 255, 0.2);
         }
 
         .dashboard-header h1 {
@@ -996,6 +1021,7 @@
         <!-- Therapist Dashboard -->
         <div class="therapist-dashboard" id="therapistDashboard" style="display: none;">
             <div class="dashboard-header">
+                <button class="back-to-client-btn" id="backToClientBtn">← Back to Client View</button>
                 <h1>Therapist Dashboard</h1>
                 <p>Monitor active chat sessions and psychodynamic patterns</p>
             </div>
@@ -1129,6 +1155,7 @@
         const chatList = document.getElementById('chatList');
         const viewToggle = document.getElementById('viewToggle');
         const therapistDashboard = document.getElementById('therapistDashboard');
+        const backToClientBtn = document.getElementById('backToClientBtn');
         const mainContent = document.querySelector('.main-content');
         const sidebar = document.querySelector('.sidebar');
 
@@ -1739,8 +1766,9 @@ When user shares difficult content, focus on their feelings about it rather than
             }
         });
 
-        // View toggle event listener
+        // View toggle event listeners
         viewToggle.addEventListener('click', toggleView);
+        backToClientBtn.addEventListener('click', showClientView);
 
         // Initialize view based on URL parameters
         checkURLParams();
