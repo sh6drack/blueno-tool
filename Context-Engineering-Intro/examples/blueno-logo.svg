@@ -1,0 +1,61 @@
+<svg viewBox="0 0 64 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated; image-rendering: crisp-edges;">
+    <!-- Lamp glow (pixelated) -->
+    <rect fill="#FFE082" x="28" y="0" width="8" height="8" opacity="0.6"/>
+    <rect fill="#FFE082" x="24" y="4" width="16" height="4" opacity="0.4"/>
+    
+    <!-- Lamp shade -->
+    <rect fill="#2c3e50" x="24" y="8" width="16" height="4"/>
+    <rect fill="#2c3e50" x="20" y="4" width="4" height="4"/>
+    <rect fill="#2c3e50" x="40" y="4" width="4" height="4"/>
+    
+    <!-- Lamp pole -->
+    <rect fill="#2c3e50" x="30" y="12" width="4" height="8"/>
+    
+    <!-- Lamp bulb -->
+    <rect fill="#FFEB3B" x="28" y="2" width="8" height="6"/>
+    
+    <!-- Light rays (pixelated) -->
+    <rect fill="#FFE082" x="20" y="6" width="2" height="2" opacity="0.7"/>
+    <rect fill="#FFE082" x="42" y="6" width="2" height="2" opacity="0.7"/>
+    <rect fill="#FFE082" x="26" y="2" width="2" height="2" opacity="0.7"/>
+    <rect fill="#FFE082" x="36" y="2" width="2" height="2" opacity="0.7"/>
+    
+    <!-- Ears -->
+    <rect fill="#5dade2" x="14" y="20" width="6" height="6"/>
+    <rect fill="#5dade2" x="44" y="20" width="6" height="6"/>
+    
+    <!-- Head -->
+    <rect fill="#5dade2" x="20" y="24" width="24" height="16"/>
+    <rect fill="#5dade2" x="18" y="28" width="2" height="8"/>
+    <rect fill="#5dade2" x="44" y="28" width="2" height="8"/>
+    
+    <!-- Eyes -->
+    <rect fill="#2c3e50" x="24" y="30" width="4" height="4"/>
+    <rect fill="#2c3e50" x="36" y="30" width="4" height="4"/>
+    
+    <!-- Snout -->
+    <rect fill="#89CFF0" x="26" y="36" width="12" height="4"/>
+    
+    <!-- Nose -->
+    <rect fill="#3498db" x="30" y="36" width="4" height="2"/>
+    
+    <!-- Body - connected to head, wider -->
+    <rect fill="#5dade2" x="16" y="40" width="32" height="24"/>
+    <rect fill="#5dade2" x="14" y="44" width="2" height="16"/>
+    <rect fill="#5dade2" x="48" y="44" width="2" height="16"/>
+    
+    <!-- Belly -->
+    <rect fill="#89CFF0" x="24" y="48" width="16" height="12"/>
+    
+    <!-- Arms -->
+    <rect fill="#5dade2" x="6" y="46" width="8" height="12"/>
+    <rect fill="#5dade2" x="50" y="46" width="8" height="12"/>
+    
+    <!-- Legs extending down (sitting) -->
+    <rect fill="#5dade2" x="18" y="64" width="10" height="16"/>
+    <rect fill="#5dade2" x="36" y="64" width="10" height="16"/>
+    
+    <!-- Feet pointing forward -->
+    <rect fill="#89CFF0" x="18" y="76" width="10" height="4"/>
+    <rect fill="#89CFF0" x="36" y="76" width="10" height="4"/>
+</svg>
