@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blueno therapy</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: linear-gradient(135deg, #89CFF0 0%, #B0E0E6 50%, #87CEEB 100%);
+            min-height: 100vh;
+            display: flex;
+            padding: 0;
+            position: relative;
+        }
+
+        /* Pixel grid overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(93, 173, 226, 0.03) 2px, rgba(93, 173, 226, 0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(93, 173, 226, 0.03) 2px, rgba(93, 173, 226, 0.03) 4px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .app-container {
+            width: 100%;
+            display: flex;
+            position: relative;
+            z-index: 2;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #f8fcff 0%, #e8f4f8 50%, #d4edda 100%);
+            border-right: 3px solid #5dade2;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 0 rgba(93, 173, 226, 0.2);
+        }
+
+        .settings-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .settings-popup-content {
+            background: rgba(255, 255, 255, 0.98);
+            border: 3px solid #5dade2;
+            border-radius: 8px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 8px 8px 0px rgba(93, 173, 226, 0.3);
+        }
+
+        .settings-popup h2 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+        }
+
+        .close-settings {
+            float: right;
+            background: #e74c3c;
+            color: white;
+            border: 2px solid #c0392b;
+            padding: 8px 12px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .close-settings:hover {
+            background: #c0392b;
+        }
+
+        .settings-trigger {
+            background: white;
+            border: 3px solid #5dade2;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px;
+            box-shadow: 4px 4px 0px rgba(93, 173, 226, 0.2);
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .settings-trigger:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px rgba(93, 173, 226, 0.2);
+        }
+
+        .settings-trigger h3 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            color: #2c3e50;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 2px solid rgba(93, 173, 226, 0.3);
+            background: transparent;
+        }
+
+        .logo-main {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0;
+        }
+
+        .pixel-bear {
+            width: 48px;
+            height: 48px;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.1));
+            animation: bearWave 2s ease-in-out;
+        }
+
+        @keyframes bearWave {
+            0% { transform: scale(0) rotate(-10deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .app-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            color: #2c3e50;
+            letter-spacing: 1px;
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 12px;
+        }
+
+        .chat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(93, 173, 226, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid #5dade2;
+        }
+
+        .chat-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #5dade2;
+            transform: translateX(2px);
+        }
+
+        .chat-item.active {
+            background: rgba(93, 173, 226, 0.1);
+            border-color: #5dade2;
+            border-left-color: #3498db;
+        }
+
+        .chat-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 4px;
+            line-height: 1.3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .chat-preview {
+            font-size: 9px;
+            color: #7f8c8d;
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .chat-time {
+            font-size: 8px;
+            color: #95a5a6;
+            margin-top: 4px;
+        }
+
+        .new-chat-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #5dade2;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 12px 16px 12px;
+            cursor: pointer;
+            transition: all 0.1s;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: #5dade2;
+            text-align: center;
+            box-shadow: 2px 2px 0px rgba(93, 173, 226, 0.2);
+        }
+
+        .new-chat-btn:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px rgba(93, 173, 226, 0.2);
+        }
+
+        .app-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .settings-panel {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .settings-card {
+            background: white;
+            border: 3px solid #5dade2;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 4px 4px 0px rgba(93, 173, 226, 0.2);
+        }
+
+        .settings-card h3 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .setting-group {
+            margin-bottom: 16px;
+        }
+
+        .setting-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-label {
+            font-size: 11px;
+            color: #5dade2;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .slider-container {
+            position: relative;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 0;
+            background: #e8f4f8;
+            outline: none;
+            border: 2px solid #5dade2;
+            appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 0;
+            background: #5dade2;
+            cursor: pointer;
+            border: 2px solid #3498db;
+            box-shadow: 2px 2px 0px rgba(93, 173, 226, 0.3);
+        }
+
+        .toggle-container {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #5dade2;
+            background: white;
+            color: #5dade2;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.1s;
+            text-transform: uppercase;
+        }
+
+        .toggle-btn.active {
+            background: #5dade2;
+            color: white;
+            box-shadow: inset 2px 2px 0px rgba(52, 152, 219, 0.3);
+        }
+
+        .api-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #5dade2;
+            border-radius: 0;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            outline: none;
+            background: white;
+            color: #2c3e50;
+        }
+
+        .api-input:focus {
+            border-color: #3498db;
+            box-shadow: inset 2px 2px 0px rgba(93, 173, 226, 0.2);
+        }
+
+        .security-warning {
+            font-size: 9px;
+            color: #e74c3c;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .chat-header {
+            padding: 32px 48px;
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 3px solid #5dade2;
+            box-shadow: 0 4px 0 rgba(93, 173, 226, 0.2);
+        }
+
+        .chat-header h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            text-transform: lowercase;
+            margin-bottom: 8px;
+        }
+
+        .disclaimer {
+            font-size: 11px;
+            color: #e74c3c;
+            font-weight: 700;
+            background: rgba(231, 76, 60, 0.1);
+            padding: 12px;
+            border-left: 4px solid #e74c3c;
+            margin-top: 16px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.3);
+            border-left: 3px solid #5dade2;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #5dade2;
+            border: 2px solid white;
+        }
+
+        .message {
+            display: flex;
+            gap: 20px;
+            animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message-avatar {
+            width: 56px;
+            height: 56px;
+            flex-shrink: 0;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            filter: drop-shadow(3px 3px 0px rgba(0, 0, 0, 0.15));
+            animation: bobble 3s ease-in-out infinite;
+        }
+
+        @keyframes bobble {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .message-content {
+            background: white;
+            padding: 20px 24px;
+            border: 3px solid #5dade2;
+            border-radius: 0;
+            max-width: 65%;
+            color: #2c3e50;
+            line-height: 1.8;
+            font-size: var(--font-size, 15px);
+            box-shadow: 5px 5px 0px rgba(93, 173, 226, 0.25);
+            position: relative;
+        }
+
+        .message-content::before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 12px 12px 0;
+            border-color: transparent #5dade2 transparent transparent;
+        }
+
+        .message-content::after {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 9px 9px 0;
+            border-color: transparent white transparent transparent;
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, #5dade2 0%, #3498db 100%);
+            color: white;
+            border-color: #3498db;
+            box-shadow: 5px 5px 0px rgba(52, 152, 219, 0.35);
+        }
+
+        .user-message .message-content::before {
+            left: auto;
+            right: -12px;
+            border-width: 0 0 12px 12px;
+            border-color: transparent transparent transparent #3498db;
+        }
+
+        .user-message .message-content::after {
+            left: auto;
+            right: -6px;
+            border-width: 0 0 9px 9px;
+            border-color: transparent transparent transparent #5dade2;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 20px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 20px 24px;
+            background: white;
+            border: 3px solid #5dade2;
+            border-radius: 0;
+            box-shadow: 5px 5px 0px rgba(93, 173, 226, 0.25);
+            position: relative;
+        }
+
+        .typing-dots::before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 12px 12px 0;
+            border-color: transparent #5dade2 transparent transparent;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #5dade2;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        .conversation-starters {
+            padding: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-top: 2px solid rgba(93, 173, 226, 0.3);
+        }
+
+        .starter-btn {
+            background: white;
+            border: 2px solid #5dade2;
+            padding: 12px 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.1s;
+            color: #5dade2;
+            box-shadow: 3px 3px 0px rgba(93, 173, 226, 0.3);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .starter-btn:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0px rgba(93, 173, 226, 0.3);
+        }
+
+        .starter-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: none;
+        }
+
+        .chat-input-container {
+            padding: 32px 48px;
+            background: rgba(255, 255, 255, 0.95);
+            border-top: 3px solid #5dade2;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            box-shadow: 0 -4px 0 rgba(93, 173, 226, 0.2);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 18px 24px;
+            border: 3px solid #5dade2;
+            border-radius: 0;
+            font-family: 'Space Mono', monospace;
+            font-size: var(--font-size, 15px);
+            outline: none;
+            transition: all 0.2s;
+            background: white;
+            color: #2c3e50;
+            box-shadow: inset 3px 3px 0px rgba(93, 173, 226, 0.1);
+        }
+
+        .chat-input:focus {
+            box-shadow: inset 4px 4px 0px rgba(93, 173, 226, 0.2);
+            border-color: #3498db;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #5dade2 0%, #3498db 100%);
+            color: white;
+            border: 3px solid #3498db;
+            padding: 18px 36px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.1s;
+            text-transform: uppercase;
+            box-shadow: 5px 5px 0px rgba(52, 152, 219, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .send-button:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0px rgba(52, 152, 219, 0.4);
+        }
+
+        .send-button:active {
+            transform: translate(5px, 5px);
+            box-shadow: none;
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 5px 5px 0px rgba(52, 152, 219, 0.4);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .chat-messages {
+                padding: 32px 24px;
+            }
+            
+            .chat-input-container {
+                padding: 24px;
+            }
+
+            .conversation-starters {
+                padding: 12px;
+            }
+
+            .starter-btn {
+                min-width: auto;
+                flex: 1;
+                font-size: 11px;
+                padding: 10px 12px;
+            }
+        }
+
+        /* Font size variables */
+        :root {
+            --font-size: 15px;
+        }
+
+        .font-small { --font-size: 12px; }
+        .font-medium { --font-size: 15px; }
+        .font-large { --font-size: 18px; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-main">
+                    <svg class="pixel-bear" viewBox="0 0 64 80" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Lamp glow (pixelated) -->
+                        <rect fill="#FFE082" x="28" y="0" width="8" height="8" opacity="0.6">
+                            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite"/>
+                        </rect>
+                        <rect fill="#FFE082" x="24" y="4" width="16" height="4" opacity="0.4"/>
+                        
+                        <!-- Lamp shade -->
+                        <rect fill="#2c3e50" x="24" y="8" width="16" height="4"/>
+                        <rect fill="#2c3e50" x="20" y="4" width="4" height="4"/>
+                        <rect fill="#2c3e50" x="40" y="4" width="4" height="4"/>
+                        
+                        <!-- Lamp pole -->
+                        <rect fill="#2c3e50" x="30" y="12" width="4" height="8"/>
+                        
+                        <!-- Lamp bulb -->
+                        <rect fill="#FFEB3B" x="28" y="2" width="8" height="6">
+                            <animate attributeName="fill" values="#FFEB3B;#FFFFFF;#FFEB3B" dur="1.5s" repeatCount="indefinite"/>
+                        </rect>
+                        
+                        <!-- Light rays (pixelated) -->
+                        <rect fill="#FFE082" x="20" y="6" width="2" height="2" opacity="0.7"/>
+                        <rect fill="#FFE082" x="42" y="6" width="2" height="2" opacity="0.7"/>
+                        <rect fill="#FFE082" x="26" y="2" width="2" height="2" opacity="0.7"/>
+                        <rect fill="#FFE082" x="36" y="2" width="2" height="2" opacity="0.7"/>
+                        
+                        <!-- Ears -->
+                        <rect fill="#5dade2" x="14" y="20" width="6" height="6"/>
+                        <rect fill="#5dade2" x="44" y="20" width="6" height="6"/>
+                        
+                        <!-- Head -->
+                        <rect fill="#5dade2" x="20" y="24" width="24" height="16"/>
+                        <rect fill="#5dade2" x="18" y="28" width="2" height="8"/>
+                        <rect fill="#5dade2" x="44" y="28" width="2" height="8"/>
+                        
+                        <!-- Eyes -->
+                        <rect fill="#2c3e50" x="24" y="30" width="4" height="4"/>
+                        <rect fill="#2c3e50" x="36" y="30" width="4" height="4"/>
+                        
+                        <!-- Snout -->
+                        <rect fill="#89CFF0" x="26" y="36" width="12" height="4"/>
+                        
+                        <!-- Nose -->
+                        <rect fill="#3498db" x="30" y="36" width="4" height="2"/>
+                        
+                        <!-- Body - connected to head, wider -->
+                        <rect fill="#5dade2" x="16" y="40" width="32" height="24"/>
+                        <rect fill="#5dade2" x="14" y="44" width="2" height="16"/>
+                        <rect fill="#5dade2" x="48" y="44" width="2" height="16"/>
+                        
+                        <!-- Belly -->
+                        <rect fill="#89CFF0" x="24" y="48" width="16" height="12"/>
+                        
+                        <!-- Arms -->
+                        <rect fill="#5dade2" x="6" y="46" width="8" height="12"/>
+                        <rect fill="#5dade2" x="50" y="46" width="8" height="12"/>
+                        
+                        <!-- Legs extending down (sitting) -->
+                        <rect fill="#5dade2" x="18" y="64" width="10" height="16"/>
+                        <rect fill="#5dade2" x="36" y="64" width="10" height="16"/>
+                        
+                        <!-- Feet pointing forward -->
+                        <rect fill="#89CFF0" x="18" y="76" width="10" height="4"/>
+                        <rect fill="#89CFF0" x="36" y="76" width="10" height="4"/>
+                    </svg>
+                    <div>
+                        <div class="app-title">blueno</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="new-chat-btn" id="newChatBtn">
+                + New Chat
+            </div>
+            
+            <div class="chat-list" id="chatList">
+                <!-- Chat sessions will be dynamically added here -->
+            </div>
+            
+            <div class="settings-trigger" id="settingsBtn">
+                <h3>Settings</h3>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="chat-header">
+                <div class="disclaimer">
+                    ⚠️ This is a research prototype demonstrating psychodynamic AI techniques. Not a replacement for professional therapy.
+                </div>
+            </div>
+
+            <div class="conversation-starters" id="conversationStarters">
+                <button class="starter-btn" data-message="I've been feeling really anxious lately and I'm not sure why...">
+                    I'm feeling anxious...
+                </button>
+                <button class="starter-btn" data-message="I keep thinking about something that happened and I can't let it go...">
+                    I keep thinking about...
+                </button>
+                <button class="starter-btn" data-message="I'm struggling with a relationship and don't know what to do...">
+                    I'm struggling with...
+                </button>
+            </div>
+
+            <div class="chat-messages" id="messages">
+                <div class="message">
+                    <svg class="message-avatar" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <!-- ears (round teddy style) -->
+                        <circle fill="#5dade2" cx="6" cy="4" r="2.5"/>
+                        <circle fill="#5dade2" cx="18" cy="4" r="2.5"/>
+                        <!-- head (round) -->
+                        <circle fill="#5dade2" cx="12" cy="8" r="5"/>
+                        <!-- lamp base on head -->
+                        <rect fill="#2c3e50" x="11" y="2" width="2" height="2"/>
+                        <rect fill="#2c3e50" x="10" y="1" width="4" height="1"/>
+                        <!-- eyes (button style) -->
+                        <circle fill="#2c3e50" cx="9" cy="8" r="1"/>
+                        <circle fill="#2c3e50" cx="15" cy="8" r="1"/>
+                        <!-- snout -->
+                        <ellipse fill="#89CFF0" cx="12" cy="10" rx="2" ry="1.5"/>
+                        <!-- nose -->
+                        <circle fill="#3498db" cx="12" cy="9.5" r="0.8"/>
+                        <!-- body (sitting teddy) -->
+                        <ellipse fill="#5dade2" cx="12" cy="16" rx="5" ry="4"/>
+                        <!-- arms -->
+                        <ellipse fill="#5dade2" cx="7" cy="15" rx="2" ry="3" transform="rotate(-20 7 15)"/>
+                        <ellipse fill="#5dade2" cx="17" cy="15" rx="2" ry="3" transform="rotate(20 17 15)"/>
+                        <!-- legs (sitting) -->
+                        <ellipse fill="#5dade2" cx="9" cy="20" rx="2.5" ry="2"/>
+                        <ellipse fill="#5dade2" cx="15" cy="20" rx="2.5" ry="2"/>
+                        <!-- belly detail -->
+                        <ellipse fill="#89CFF0" cx="12" cy="16" rx="3" ry="2.5"/>
+                    </svg>
+                    <div class="message-content">
+                        What's on your mind today? You can start with one of the prompts above, or share whatever feels important to you right now.
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="userInput" placeholder="share what you're thinking...">
+                <button class="send-button" id="sendBtn">send</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Popup -->
+    <div class="settings-popup" id="settingsPopup">
+        <div class="settings-popup-content">
+            <button class="close-settings" id="closeSettings">×</button>
+            <h2>Settings</h2>
+            
+            <div class="settings-card">
+                <h3>API Configuration</h3>
+                <div class="setting-group">
+                    <div class="setting-label">Claude API Key</div>
+                    <input type="password" class="api-input" id="apiKey" placeholder="sk-ant-...">
+                    <div class="security-warning">⚠️ Never share your API key. This is stored only in memory.</div>
+                </div>
+            </div>
+            
+            <div class="settings-card">
+                <h3>Appearance</h3>
+                <div class="setting-group">
+                    <div class="setting-label">Font Size</div>
+                    <div class="slider-container">
+                        <input type="range" class="slider" id="fontSizeSlider" min="12" max="18" value="15">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-card">
+                <h3>Approach</h3>
+                <div class="setting-group">
+                    <div class="setting-label">Therapy Intensity</div>
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" data-intensity="gentle">Gentle</button>
+                        <button class="toggle-btn" data-intensity="direct">Direct</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration and state
+        let API_CONFIG = {
+            apiKey: '',
+            endpoint: 'https://api.anthropic.com/v1/messages',
+            model: 'claude-3-sonnet-20240229'
+        };
+
+        let chatSessions = [];
+        let currentChatId = null;
+        let settings = {
+            therapyIntensity: 'gentle',
+            fontSize: 15
+        };
+
+        // DOM elements
+        const messagesDiv = document.getElementById('messages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const apiKeyInput = document.getElementById('apiKey');
+        const conversationStarters = document.getElementById('conversationStarters');
+        const fontSizeSlider = document.getElementById('fontSizeSlider');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsPopup = document.getElementById('settingsPopup');
+        const closeSettings = document.getElementById('closeSettings');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const chatList = document.getElementById('chatList');
+
+        // Chat session management
+        function createNewChat() {
+            const chatId = Date.now().toString();
+            const newChat = {
+                id: chatId,
+                title: 'New conversation',
+                preview: '',
+                messages: [],
+                createdAt: new Date()
+            };
+            
+            chatSessions.unshift(newChat);
+            currentChatId = chatId;
+            
+            // Clear current conversation
+            messagesDiv.innerHTML = `
+                <div class="message">
+                    <svg class="message-avatar" viewBox="0 0 64 80" xmlns="http://www.w3.org/2000/svg">
+                        <rect fill="#5dade2" x="14" y="20" width="6" height="6"/>
+                        <rect fill="#5dade2" x="44" y="20" width="6" height="6"/>
+                        <rect fill="#5dade2" x="20" y="24" width="24" height="16"/>
+                        <rect fill="#5dade2" x="18" y="28" width="2" height="8"/>
+                        <rect fill="#5dade2" x="44" y="28" width="2" height="8"/>
+                        <rect fill="#2c3e50" x="24" y="30" width="4" height="4"/>
+                        <rect fill="#2c3e50" x="36" y="30" width="4" height="4"/>
+                        <rect fill="#89CFF0" x="26" y="36" width="12" height="4"/>
+                        <rect fill="#3498db" x="30" y="36" width="4" height="2"/>
+                        <rect fill="#5dade2" x="16" y="40" width="32" height="24"/>
+                        <rect fill="#5dade2" x="14" y="44" width="2" height="16"/>
+                        <rect fill="#5dade2" x="48" y="44" width="2" height="16"/>
+                        <rect fill="#89CFF0" x="24" y="48" width="16" height="12"/>
+                        <rect fill="#5dade2" x="6" y="46" width="8" height="12"/>
+                        <rect fill="#5dade2" x="50" y="46" width="8" height="12"/>
+                        <rect fill="#5dade2" x="18" y="64" width="10" height="16"/>
+                        <rect fill="#5dade2" x="36" y="64" width="10" height="16"/>
+                        <rect fill="#89CFF0" x="18" y="76" width="10" height="4"/>
+                        <rect fill="#89CFF0" x="36" y="76" width="10" height="4"/>
+                    </svg>
+                    <div class="message-content">
+                        What's on your mind today? You can start with one of the prompts above, or share whatever feels important to you right now.
+                    </div>
+                </div>
+            `;
+            
+            // Show conversation starters
+            conversationStarters.style.display = 'flex';
+            
+            updateChatList();
+        }
+
+        function updateChatList() {
+            chatList.innerHTML = '';
+            
+            chatSessions.forEach(chat => {
+                const chatItem = document.createElement('div');
+                chatItem.className = 'chat-item' + (chat.id === currentChatId ? ' active' : '');
+                chatItem.dataset.chatId = chat.id;
+                
+                const timeAgo = getTimeAgo(chat.createdAt);
+                
+                chatItem.innerHTML = `
+                    <div class="chat-title">${chat.title}</div>
+                    <div class="chat-preview">${chat.preview}</div>
+                    <div class="chat-time">${timeAgo}</div>
+                `;
+                
+                chatItem.addEventListener('click', () => loadChat(chat.id));
+                chatList.appendChild(chatItem);
+            });
+        }
+
+        function loadChat(chatId) {
+            const chat = chatSessions.find(c => c.id === chatId);
+            if (!chat) return;
+            
+            currentChatId = chatId;
+            
+            // Clear messages and reload from chat history
+            messagesDiv.innerHTML = '';
+            chat.messages.forEach(msg => {
+                addMessageToDOM(msg.content, msg.isUser);
+            });
+            
+            // Hide conversation starters if chat has messages
+            if (chat.messages.length > 0) {
+                conversationStarters.style.display = 'none';
+            } else {
+                conversationStarters.style.display = 'flex';
+            }
+            
+            updateChatList();
+        }
+
+        async function generateChatSummary(messages) {
+            if (!API_CONFIG.apiKey || messages.length < 2) return '';
+            
+            const conversationText = messages.map(msg => 
+                `${msg.isUser ? 'User' : 'Blueno'}: ${msg.content}`
+            ).join('\n');
+            
+            try {
+                const response = await fetch(API_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'anthropic-version': '2023-06-01',
+                        'x-api-key': API_CONFIG.apiKey
+                    },
+                    body: JSON.stringify({
+                        model: API_CONFIG.model,
+                        max_tokens: 50,
+                        system: 'Summarize this therapy conversation in 3-5 words for a chat title. Be concise and focus on the main topic.',
+                        messages: [{
+                            role: 'user',
+                            content: `Summarize this conversation in 3-5 words:\n\n${conversationText}`
+                        }]
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.content[0].text.replace(/['"]/g, '').trim();
+                }
+            } catch (error) {
+                console.error('Summary generation failed:', error);
+            }
+            
+            // Fallback to first user message
+            const firstUserMsg = messages.find(msg => msg.isUser);
+            return firstUserMsg ? firstUserMsg.content.substring(0, 30) + '...' : 'New conversation';
+        }
+
+        function getCurrentChat() {
+            return chatSessions.find(c => c.id === currentChatId);
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return 'just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            return `${days}d ago`;
+        }
+
+        // Psychodynamic system prompt
+        function getSystemPrompt() {
+            const intensityModifier = settings.therapyIntensity === 'direct' 
+                ? 'Be more direct and challenging in your questions.'
+                : 'Be gentle and supportive in your approach.';
+            
+            return `You are a psychodynamic therapy tool, not a friend or validating companion.
+
+Core principles:
+- Ask "what" and "how" questions, avoid "why" (less defensive)
+- Reflect back patterns: "You've mentioned feeling stuck twice now..."
+- Connect present to past experiences: "How does this remind you of other times?"
+- Never provide answers - guide toward self-discovery
+- Keep responses 1-2 sentences maximum
+- Focus on feelings about content, not the content itself
+- Avoid: "I'm here for you", "Your feelings are valid", "You're amazing"
+- Use: Questions, reflections, gentle observations about patterns
+
+${intensityModifier}
+
+When user shares difficult content, focus on their feelings about it rather than the content itself. Stay curious about what the user is NOT saying. Be brief and thought-provoking.`;
+        }
+
+        // Claude API integration
+        async function callClaudeAPI(userMessage) {
+            if (!API_CONFIG.apiKey) {
+                return "Please configure your Claude API key in the settings panel first.";
+            }
+
+            const currentChat = getCurrentChat();
+            const chatHistory = currentChat ? currentChat.messages.map(msg => ({
+                role: msg.isUser ? 'user' : 'assistant',
+                content: msg.content
+            })) : [];
+
+            const messages = [
+                ...chatHistory,
+                { role: 'user', content: userMessage }
+            ];
+
+            try {
+                const response = await fetch(API_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'anthropic-version': '2023-06-01',
+                        'x-api-key': API_CONFIG.apiKey
+                    },
+                    body: JSON.stringify({
+                        model: API_CONFIG.model,
+                        max_tokens: 150,
+                        system: getSystemPrompt(),
+                        messages: messages
+                    })
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        return "Your API key appears to be invalid. Please check your configuration.";
+                    } else if (response.status === 429) {
+                        return "Rate limit reached. What would you like to explore while we wait?";
+                    } else {
+                        throw new Error(`API Error: ${response.status}`);
+                    }
+                }
+
+                const data = await response.json();
+                return data.content[0].text;
+            } catch (error) {
+                console.error('Claude API Error:', error);
+                return "I'm having trouble connecting right now. What would you like to explore while we wait?";
+            }
+        }
+
+        // Message handling
+        function addMessageToDOM(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message' + (isUser ? ' user-message' : '');
+            
+            const avatarSvg = isUser 
+                ? `<svg class="message-avatar" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <rect fill="#667eea" x="4" y="2" width="8" height="2"/>
+                    <rect fill="#667eea" x="2" y="4" width="12" height="2"/>
+                    <rect fill="#764ba2" x="2" y="6" width="12" height="6"/>
+                    <rect fill="#ffffff" x="4" y="7" width="2" height="2"/>
+                    <rect fill="#ffffff" x="10" y="7" width="2" height="2"/>
+                    <rect fill="#667eea" x="4" y="12" width="3" height="2"/>
+                    <rect fill="#667eea" x="9" y="12" width="3" height="2"/>
+                    <rect fill="#8b7ec8" x="6" y="9" width="4" height="2"/>
+                   </svg>`
+                : `<svg class="message-avatar" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <!-- ears (round teddy style) -->
+                    <circle fill="#5dade2" cx="6" cy="4" r="2.5"/>
+                    <circle fill="#5dade2" cx="18" cy="4" r="2.5"/>
+                    <!-- head (round) -->
+                    <circle fill="#5dade2" cx="12" cy="8" r="5"/>
+                    <!-- lamp base on head -->
+                    <rect fill="#2c3e50" x="11" y="2" width="2" height="2"/>
+                    <rect fill="#2c3e50" x="10" y="1" width="4" height="1"/>
+                    <!-- eyes (button style) -->
+                    <circle fill="#2c3e50" cx="9" cy="8" r="1"/>
+                    <circle fill="#2c3e50" cx="15" cy="8" r="1"/>
+                    <!-- snout -->
+                    <ellipse fill="#89CFF0" cx="12" cy="10" rx="2" ry="1.5"/>
+                    <!-- nose -->
+                    <circle fill="#3498db" cx="12" cy="9.5" r="0.8"/>
+                    <!-- body (sitting teddy) -->
+                    <ellipse fill="#5dade2" cx="12" cy="16" rx="5" ry="4"/>
+                    <!-- arms -->
+                    <ellipse fill="#5dade2" cx="7" cy="15" rx="2" ry="3" transform="rotate(-20 7 15)"/>
+                    <ellipse fill="#5dade2" cx="17" cy="15" rx="2" ry="3" transform="rotate(20 17 15)"/>
+                    <!-- legs (sitting) -->
+                    <ellipse fill="#5dade2" cx="9" cy="20" rx="2.5" ry="2"/>
+                    <ellipse fill="#5dade2" cx="15" cy="20" rx="2.5" ry="2"/>
+                    <!-- belly detail -->
+                    <ellipse fill="#89CFF0" cx="12" cy="16" rx="3" ry="2.5"/>
+                   </svg>`;
+            
+            messageDiv.innerHTML = isUser 
+                ? `<div class="message-content">${text}</div>${avatarSvg}`
+                : `${avatarSvg}<div class="message-content">${text}</div>`;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function addMessage(text, isUser = false) {
+            addMessageToDOM(text, isUser);
+            
+            // Add to current chat session
+            const currentChat = getCurrentChat();
+            if (currentChat) {
+                currentChat.messages.push({ content: text, isUser, timestamp: new Date() });
+                
+                // Update chat title and preview after a few messages
+                if (currentChat.messages.length >= 3 && currentChat.title === 'New conversation') {
+                    currentChat.title = await generateChatSummary(currentChat.messages);
+                }
+                
+                // Update preview with last user message
+                if (isUser) {
+                    currentChat.preview = text.length > 40 ? text.substring(0, 37) + '...' : text;
+                }
+                
+                updateChatList();
+            }
+        }
+
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            
+            typingDiv.innerHTML = `
+                <svg class="message-avatar" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <circle fill="#5dade2" cx="6" cy="4" r="2.5"/>
+                    <circle fill="#5dade2" cx="18" cy="4" r="2.5"/>
+                    <circle fill="#5dade2" cx="12" cy="8" r="5"/>
+                    <rect fill="#2c3e50" x="11" y="2" width="2" height="2"/>
+                    <rect fill="#2c3e50" x="10" y="1" width="4" height="1"/>
+                    <circle fill="#2c3e50" cx="9" cy="8" r="1"/>
+                    <circle fill="#2c3e50" cx="15" cy="8" r="1"/>
+                    <ellipse fill="#89CFF0" cx="12" cy="10" rx="2" ry="1.5"/>
+                    <circle fill="#3498db" cx="12" cy="9.5" r="0.8"/>
+                    <ellipse fill="#5dade2" cx="12" cy="16" rx="5" ry="4"/>
+                    <ellipse fill="#5dade2" cx="7" cy="15" rx="2" ry="3" transform="rotate(-20 7 15)"/>
+                    <ellipse fill="#5dade2" cx="17" cy="15" rx="2" ry="3" transform="rotate(20 17 15)"/>
+                    <ellipse fill="#5dade2" cx="9" cy="20" rx="2.5" ry="2"/>
+                    <ellipse fill="#5dade2" cx="15" cy="20" rx="2.5" ry="2"/>
+                    <ellipse fill="#89CFF0" cx="12" cy="16" rx="3" ry="2.5"/>
+                </svg>
+                <div class="typing-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            `;
+            
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Handle sending messages
+        async function handleSend(message = null) {
+            const text = message || userInput.value.trim();
+            if (!text) return;
+
+            // Hide conversation starters after first message
+            if (conversationStarters.style.display !== 'none') {
+                conversationStarters.style.display = 'none';
+            }
+
+            addMessage(text, true);
+            if (!message) userInput.value = '';
+
+            // Disable send button and show typing
+            sendBtn.disabled = true;
+            showTypingIndicator();
+
+            // Show typing indicator briefly for better UX
+            setTimeout(async () => {
+                const response = await callClaudeAPI(text);
+                hideTypingIndicator();
+                addMessage(response);
+                sendBtn.disabled = false;
+            }, 800);
+        }
+
+        // Event listeners
+        sendBtn.addEventListener('click', () => handleSend());
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !sendBtn.disabled) handleSend();
+        });
+
+        newChatBtn.addEventListener('click', createNewChat);
+
+        // Conversation starters
+        conversationStarters.addEventListener('click', (e) => {
+            if (e.target.classList.contains('starter-btn')) {
+                const message = e.target.dataset.message;
+                handleSend(message);
+            }
+        });
+
+        // Settings handling
+        apiKeyInput.addEventListener('input', (e) => {
+            API_CONFIG.apiKey = e.target.value.trim();
+        });
+
+        fontSizeSlider.addEventListener('input', (e) => {
+            settings.fontSize = parseInt(e.target.value);
+            document.documentElement.style.setProperty('--font-size', settings.fontSize + 'px');
+        });
+
+        // Settings popup handling
+        settingsBtn.addEventListener('click', () => {
+            settingsPopup.style.display = 'flex';
+        });
+
+        closeSettings.addEventListener('click', () => {
+            settingsPopup.style.display = 'none';
+        });
+
+        settingsPopup.addEventListener('click', (e) => {
+            if (e.target === settingsPopup) {
+                settingsPopup.style.display = 'none';
+            }
+        });
+
+        // Toggle buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('toggle-btn')) {
+                const container = e.target.parentElement;
+                container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                if (e.target.dataset.intensity) {
+                    settings.therapyIntensity = e.target.dataset.intensity;
+                }
+            }
+        });
+
+        // Initialize first chat and focus input on load
+        createNewChat();
+        userInput.focus();
+    </script>
+</body>
+</html>
