@@ -1,4 +1,13 @@
+
+
 ## FEATURE:
+
+CRITICAL CONSTRAINTS:
+- This is a SINGLE-FILE HTML APPLICATION with embedded JavaScript
+- NO Python, NO agents, NO separate files, NO multi-agent systems
+- ONE HTML file that can be opened in a browser
+- Uses fetch() to call Claude API directly from JavaScript
+- All code must be in a single .html file
 
 Build a minimal web-based chat interface for Blueno demonstrating psychodynamic AI therapy approach. Core functionality:
 - Clean chat UI with 8-bit/retro aesthetic using monospace fonts
