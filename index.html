@@ -238,6 +238,28 @@
             box-shadow: 1px 1px 0px rgba(93, 173, 226, 0.2);
         }
 
+        .view-toggle-btn {
+            background: #27ae60;
+            border: 2px solid #2ecc71;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 12px 16px 12px;
+            cursor: pointer;
+            transition: all 0.1s;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            box-shadow: 2px 2px 0px rgba(46, 204, 113, 0.3);
+        }
+
+        .view-toggle-btn:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px rgba(46, 204, 113, 0.3);
+            background: #2ecc71;
+        }
+
         .app-subtitle {
             font-size: 12px;
             color: rgba(255, 255, 255, 0.9);
@@ -351,11 +373,145 @@
             box-shadow: inset 2px 2px 0px rgba(93, 173, 226, 0.2);
         }
 
+        .api-save-btn {
+            background: #27ae60;
+            color: white;
+            border: 2px solid #2ecc71;
+            padding: 12px 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.1s;
+            text-transform: uppercase;
+            box-shadow: 2px 2px 0px rgba(46, 204, 113, 0.3);
+        }
+
+        .api-save-btn:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px rgba(46, 204, 113, 0.3);
+            background: #2ecc71;
+        }
+
         .security-warning {
             font-size: 9px;
             color: #e74c3c;
             margin-top: 8px;
             line-height: 1.4;
+        }
+
+        .therapist-dashboard {
+            flex: 1;
+            padding: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            color: white;
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .dashboard-header h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 18px;
+            margin-bottom: 16px;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+        }
+
+        .dashboard-header p {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .session-overview {
+            margin-bottom: 48px;
+        }
+
+        .session-overview h2 {
+            font-family: 'Space Mono', monospace;
+            font-size: 16px;
+            margin-bottom: 24px;
+            color: #FFE082;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .metric-value {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #FFE082;
+        }
+
+        .metric-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        .sessions-list h2 {
+            font-family: 'Space Mono', monospace;
+            font-size: 16px;
+            margin-bottom: 24px;
+            color: #FFE082;
+        }
+
+        .session-table {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 16px;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 16px;
+            padding: 16px 24px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .table-row:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .main-content {
@@ -681,154 +837,6 @@
         .font-small { --font-size: 12px; }
         .font-medium { --font-size: 15px; }
         .font-large { --font-size: 18px; }
-
-        .view-toggle {
-            background: #27ae60;
-            border: 3px solid #229954;
-            border-radius: 8px;
-            padding: 12px;
-            margin: 8px 12px;
-            cursor: pointer;
-            transition: all 0.1s;
-            font-family: 'Space Mono', monospace;
-            font-size: 10px;
-            font-weight: 700;
-            color: white;
-            text-align: center;
-            box-shadow: 2px 2px 0px rgba(39, 174, 96, 0.3);
-        }
-
-        .view-toggle:hover {
-            transform: translate(1px, 1px);
-            box-shadow: 1px 1px 0px rgba(39, 174, 96, 0.3);
-        }
-
-        .therapist-dashboard {
-            display: none;
-            padding: 48px;
-            overflow-y: auto;
-        }
-
-        .dashboard-header {
-            margin-bottom: 32px;
-            text-align: center;
-        }
-
-        .dashboard-title {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 20px;
-            color: #2c3e50;
-            margin-bottom: 16px;
-        }
-
-        .dashboard-subtitle {
-            font-size: 12px;
-            color: #7f8c8d;
-            font-weight: 400;
-        }
-
-        .client-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .client-card {
-            background: rgba(255, 255, 255, 0.95);
-            border: 3px solid #5dade2;
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 6px 6px 0px rgba(93, 173, 226, 0.2);
-            border-left: 6px solid #3498db;
-        }
-
-        .client-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid rgba(93, 173, 226, 0.2);
-        }
-
-        .client-id {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
-            color: #2c3e50;
-        }
-
-        .client-status {
-            background: #2ecc71;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .client-status.inactive {
-            background: #95a5a6;
-        }
-
-        .section-title {
-            font-family: 'Space Mono', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            color: #5dade2;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            margin-top: 16px;
-        }
-
-        .section-title:first-of-type {
-            margin-top: 0;
-        }
-
-        .theme-list, .pattern-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .theme-item, .pattern-item {
-            background: rgba(93, 173, 226, 0.1);
-            border: 1px solid rgba(93, 173, 226, 0.3);
-            border-radius: 4px;
-            padding: 8px 12px;
-            margin-bottom: 6px;
-            font-size: 11px;
-            line-height: 1.4;
-        }
-
-        .conversation-excerpt {
-            background: rgba(52, 152, 219, 0.05);
-            border: 2px solid rgba(52, 152, 219, 0.2);
-            border-radius: 6px;
-            padding: 12px;
-            font-size: 11px;
-            line-height: 1.5;
-            color: #2c3e50;
-            font-style: italic;
-        }
-
-        .excerpt-meta {
-            font-size: 9px;
-            color: #7f8c8d;
-            margin-top: 8px;
-            font-style: normal;
-        }
-
-        @media (max-width: 1024px) {
-            .client-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .therapist-dashboard {
-                padding: 24px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -911,12 +919,12 @@
                 + New Chat
             </div>
             
-            <div class="chat-list" id="chatList">
-                <!-- Chat sessions will be dynamically added here -->
+            <div class="view-toggle-btn" id="viewToggle">
+                👁 Therapist View
             </div>
             
-            <div class="view-toggle" id="viewToggle">
-                👩‍⚕️ Therapist View
+            <div class="chat-list" id="chatList">
+                <!-- Chat sessions will be dynamically added here -->
             </div>
             
             <div class="settings-trigger" id="settingsBtn">
@@ -983,124 +991,49 @@
                 <button class="send-button" id="sendBtn">send</button>
             </div>
         </main>
-        
+
         <!-- Therapist Dashboard -->
-        <main class="therapist-dashboard" id="therapistDashboard">
+        <div class="therapist-dashboard" id="therapistDashboard" style="display: none;">
             <div class="dashboard-header">
-                <h1 class="dashboard-title">Therapist Dashboard</h1>
-                <p class="dashboard-subtitle">Monitoring client sessions and identifying patterns</p>
+                <h1>Therapist Dashboard</h1>
+                <p>Monitor active chat sessions and psychodynamic patterns</p>
             </div>
             
-            <div class="client-grid">
-                <div class="client-card">
-                    <div class="client-header">
-                        <span class="client-id">Client A</span>
-                        <span class="client-status">Active</span>
-                    </div>
-                    
-                    <div class="section-title">Recent Themes</div>
-                    <ul class="theme-list">
-                        <li class="theme-item">Work-related anxiety and perfectionism</li>
-                        <li class="theme-item">Relationship with parents and boundaries</li>
-                        <li class="theme-item">Self-worth and achievement validation</li>
-                    </ul>
-                    
-                    <div class="section-title">AI-Identified Patterns</div>
-                    <ul class="pattern-list">
-                        <li class="pattern-item">Consistently deflects with humor when discussing emotions</li>
-                        <li class="pattern-item">Links current stress to childhood approval-seeking</li>
-                        <li class="pattern-item">Shows resistance to vulnerability in relationships</li>
-                    </ul>
-                    
-                    <div class="section-title">Recent Conversation</div>
-                    <div class="conversation-excerpt">
-                        "I keep thinking about what my boss said in the meeting. Maybe I'm not cut out for this role..."
-                        <div class="excerpt-meta">2 hours ago • Session length: 15 minutes</div>
+            <div class="dashboard-content">
+                <div class="session-overview">
+                    <h2>Session Overview</h2>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value" id="totalSessions">0</div>
+                            <div class="metric-label">Total Sessions</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="avgMessages">0</div>
+                            <div class="metric-label">Avg Messages/Session</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="commonThemes">-</div>
+                            <div class="metric-label">Common Themes</div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="client-card">
-                    <div class="client-header">
-                        <span class="client-id">Client B</span>
-                        <span class="client-status">Active</span>
-                    </div>
-                    
-                    <div class="section-title">Recent Themes</div>
-                    <ul class="theme-list">
-                        <li class="theme-item">Grief and loss processing</li>
-                        <li class="theme-item">Identity after major life change</li>
-                        <li class="theme-item">Support system and isolation concerns</li>
-                    </ul>
-                    
-                    <div class="section-title">AI-Identified Patterns</div>
-                    <ul class="pattern-list">
-                        <li class="pattern-item">Intellectualizes emotions to avoid feeling them</li>
-                        <li class="pattern-item">Compares current situation to "how things used to be"</li>
-                        <li class="pattern-item">Seeks reassurance but dismisses positive feedback</li>
-                    </ul>
-                    
-                    <div class="section-title">Recent Conversation</div>
-                    <div class="conversation-excerpt">
-                        "Everyone keeps saying I'm handling this well, but I don't feel like I am. I just feel... empty."
-                        <div class="excerpt-meta">Yesterday • Session length: 22 minutes</div>
-                    </div>
-                </div>
-                
-                <div class="client-card">
-                    <div class="client-header">
-                        <span class="client-id">Client C</span>
-                        <span class="client-status">Active</span>
-                    </div>
-                    
-                    <div class="section-title">Recent Themes</div>
-                    <ul class="theme-list">
-                        <li class="theme-item">Social anxiety and self-consciousness</li>
-                        <li class="theme-item">Fear of judgment and rejection</li>
-                        <li class="theme-item">Difficulty with self-compassion</li>
-                    </ul>
-                    
-                    <div class="section-title">AI-Identified Patterns</div>
-                    <ul class="pattern-list">
-                        <li class="pattern-item">Anticipates negative outcomes in social situations</li>
-                        <li class="pattern-item">Self-criticizes after every interaction</li>
-                        <li class="pattern-item">Avoids eye contact even in text-based conversation style</li>
-                    </ul>
-                    
-                    <div class="section-title">Recent Conversation</div>
-                    <div class="conversation-excerpt">
-                        "I said something stupid at lunch today. Now everyone probably thinks I'm weird..."
-                        <div class="excerpt-meta">3 days ago • Session length: 8 minutes</div>
-                    </div>
-                </div>
-                
-                <div class="client-card">
-                    <div class="client-header">
-                        <span class="client-id">Client D</span>
-                        <span class="client-status inactive">Inactive</span>
-                    </div>
-                    
-                    <div class="section-title">Recent Themes</div>
-                    <ul class="theme-list">
-                        <li class="theme-item">Career transition and uncertainty</li>
-                        <li class="theme-item">Financial stress and family obligations</li>
-                        <li class="theme-item">Imposter syndrome in new field</li>
-                    </ul>
-                    
-                    <div class="section-title">AI-Identified Patterns</div>
-                    <ul class="pattern-list">
-                        <li class="pattern-item">Focuses on external validation of decisions</li>
-                        <li class="pattern-item">Minimizes own achievements and capabilities</li>
-                        <li class="pattern-item">Catastrophizes about potential failure scenarios</li>
-                    </ul>
-                    
-                    <div class="section-title">Recent Conversation</div>
-                    <div class="conversation-excerpt">
-                        "What if I'm making a huge mistake? I should probably just stay where I am..."
-                        <div class="excerpt-meta">1 week ago • Session length: 31 minutes</div>
+                <div class="sessions-list">
+                    <h2>Recent Sessions</h2>
+                    <div class="session-table" id="sessionTable">
+                        <div class="table-header">
+                            <div>Session</div>
+                            <div>Messages</div>
+                            <div>Last Active</div>
+                            <div>Duration</div>
+                        </div>
+                        <div class="table-body" id="sessionTableBody">
+                            <!-- Sessions will be populated dynamically -->
+                        </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
 
     <!-- Settings Popup -->
@@ -1113,7 +1046,10 @@
                 <h3>API Configuration</h3>
                 <div class="setting-group">
                     <div class="setting-label">Claude API Key</div>
-                    <input type="password" class="api-input" id="apiKey" placeholder="sk-ant-...">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="password" class="api-input" id="apiKey" placeholder="sk-ant-..." style="flex: 1;">
+                        <button class="api-save-btn" id="apiSaveBtn">Save</button>
+                    </div>
                     <div class="security-warning">⚠️ Never share your API key. This is stored only in memory.</div>
                 </div>
             </div>
@@ -1161,6 +1097,7 @@
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const apiKeyInput = document.getElementById('apiKey');
+        const apiSaveBtn = document.getElementById('apiSaveBtn');
         const conversationStarters = document.getElementById('conversationStarters');
         const fontSizeSlider = document.getElementById('fontSizeSlider');
         const settingsBtn = document.getElementById('settingsBtn');
@@ -1170,6 +1107,90 @@
         const chatList = document.getElementById('chatList');
         const viewToggle = document.getElementById('viewToggle');
         const therapistDashboard = document.getElementById('therapistDashboard');
+        const mainContent = document.querySelector('.main-content');
+        const sidebar = document.querySelector('.sidebar');
+
+        // View switching functions
+        function showClientView() {
+            mainContent.style.display = 'flex';
+            therapistDashboard.style.display = 'none';
+            sidebar.style.display = 'flex';
+            viewToggle.textContent = '👁 Therapist View';
+            
+            // Update URL without page reload
+            const url = new URL(window.location);
+            url.searchParams.delete('view');
+            window.history.pushState({}, '', url);
+        }
+
+        function showTherapistView() {
+            mainContent.style.display = 'none';
+            therapistDashboard.style.display = 'block';
+            sidebar.style.display = 'none';
+            viewToggle.textContent = '💬 Client View';
+            
+            // Update URL without page reload
+            const url = new URL(window.location);
+            url.searchParams.set('view', 'therapist');
+            window.history.pushState({}, '', url);
+            
+            // Update dashboard metrics
+            updateTherapistDashboard();
+        }
+
+        function toggleView() {
+            const isTherapistView = therapistDashboard.style.display === 'block';
+            if (isTherapistView) {
+                showClientView();
+            } else {
+                showTherapistView();
+            }
+        }
+
+        function checkURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const view = urlParams.get('view');
+            if (view === 'therapist') {
+                showTherapistView();
+            } else {
+                showClientView();
+            }
+        }
+
+        function updateTherapistDashboard() {
+            // Update total sessions
+            document.getElementById('totalSessions').textContent = chatSessions.length;
+            
+            // Update average messages per session
+            const totalMessages = chatSessions.reduce((sum, chat) => sum + chat.messages.length, 0);
+            const avgMessages = chatSessions.length > 0 ? Math.round(totalMessages / chatSessions.length) : 0;
+            document.getElementById('avgMessages').textContent = avgMessages;
+            
+            // Update common themes (simplified)
+            const themes = ['anxiety', 'relationships', 'self-worth', 'family'];
+            document.getElementById('commonThemes').textContent = themes[Math.floor(Math.random() * themes.length)];
+            
+            // Update session table
+            const tableBody = document.getElementById('sessionTableBody');
+            tableBody.innerHTML = '';
+            
+            chatSessions.slice(0, 10).forEach(chat => {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                
+                const duration = chat.messages.length > 0 ? `${Math.round(chat.messages.length * 2)} min` : '0 min';
+                const lastActive = getTimeAgo(chat.createdAt);
+                
+                row.innerHTML = `
+                    <div>${chat.title}</div>
+                    <div>${chat.messages.length}</div>
+                    <div>${lastActive}</div>
+                    <div>${duration}</div>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
 
         // Chat session management
         function createNewChat() {
@@ -1318,48 +1339,6 @@
             if (minutes < 60) return `${minutes}m ago`;
             if (hours < 24) return `${hours}h ago`;
             return `${days}d ago`;
-        }
-
-        // View switching functionality
-        function checkURLParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const view = urlParams.get('view');
-            if (view === 'therapist') {
-                showTherapistView();
-            } else {
-                showClientView();
-            }
-        }
-
-        function showTherapistView() {
-            document.querySelector('.main-content').style.display = 'none';
-            therapistDashboard.style.display = 'block';
-            viewToggle.innerHTML = '💬 Client View';
-            
-            // Update URL without page reload
-            const newURL = new URL(window.location);
-            newURL.searchParams.set('view', 'therapist');
-            window.history.pushState({}, '', newURL);
-        }
-
-        function showClientView() {
-            document.querySelector('.main-content').style.display = 'flex';
-            therapistDashboard.style.display = 'none';
-            viewToggle.innerHTML = '👩‍⚕️ Therapist View';
-            
-            // Update URL without page reload
-            const newURL = new URL(window.location);
-            newURL.searchParams.delete('view');
-            window.history.pushState({}, '', newURL);
-        }
-
-        function toggleView() {
-            const isTherapistView = therapistDashboard.style.display === 'block';
-            if (isTherapistView) {
-                showClientView();
-            } else {
-                showTherapistView();
-            }
         }
 
         // Psychodynamic system prompt
@@ -1595,7 +1574,25 @@ When user shares difficult content, focus on their feelings about it rather than
 
         // Settings handling
         apiKeyInput.addEventListener('input', (e) => {
-            API_CONFIG.apiKey = e.target.value.trim();
+            // Don't auto-save on input anymore
+        });
+
+        apiSaveBtn.addEventListener('click', () => {
+            API_CONFIG.apiKey = apiKeyInput.value.trim();
+            if (API_CONFIG.apiKey) {
+                apiSaveBtn.textContent = 'Saved!';
+                apiSaveBtn.style.background = '#2ecc71';
+                setTimeout(() => {
+                    apiSaveBtn.textContent = 'Save';
+                    apiSaveBtn.style.background = '#27ae60';
+                }, 1500);
+            }
+        });
+
+        apiKeyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                apiSaveBtn.click();
+            }
         });
 
         fontSizeSlider.addEventListener('input', (e) => {
@@ -1630,6 +1627,12 @@ When user shares difficult content, focus on their feelings about it rather than
                 }
             }
         });
+
+        // View toggle event listener
+        viewToggle.addEventListener('click', toggleView);
+
+        // Initialize view based on URL parameters
+        checkURLParams();
 
         // Initialize first chat and focus input on load
         createNewChat();
