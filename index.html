@@ -1047,8 +1047,9 @@
                 <div class="setting-group">
                     <div class="setting-label">Claude API Key</div>
                     <div style="display: flex; gap: 8px;">
-                        <input type="password" class="api-input" id="apiKey" placeholder="sk-ant-..." style="flex: 1;">
+                        <input type="text" class="api-input" id="apiKey" placeholder="Paste your Claude API key here..." style="flex: 1;">
                         <button class="api-save-btn" id="apiSaveBtn">Save</button>
+                        <button class="api-save-btn" id="apiTestBtn" style="background: #e67e22;">Test</button>
                     </div>
                     <div class="security-warning">⚠️ Never share your API key. This is stored only in memory.</div>
                 </div>
@@ -1082,7 +1083,7 @@
         let API_CONFIG = {
             apiKey: '',
             endpoint: 'https://api.anthropic.com/v1/messages',
-            model: 'claude-3-sonnet-20240229'
+            model: 'claude-3-5-sonnet-20241022'
         };
 
         let chatSessions = [];
@@ -1098,6 +1099,7 @@
         const sendBtn = document.getElementById('sendBtn');
         const apiKeyInput = document.getElementById('apiKey');
         const apiSaveBtn = document.getElementById('apiSaveBtn');
+        const apiTestBtn = document.getElementById('apiTestBtn');
         const conversationStarters = document.getElementById('conversationStarters');
         const fontSizeSlider = document.getElementById('fontSizeSlider');
         const settingsBtn = document.getElementById('settingsBtn');
@@ -1366,6 +1368,8 @@ When user shares difficult content, focus on their feelings about it rather than
 
         // Claude API integration
         async function callClaudeAPI(userMessage) {
+            console.log('🔑 API Key check:', API_CONFIG.apiKey ? 'Present' : 'Missing');
+            
             if (!API_CONFIG.apiKey) {
                 return "Please configure your Claude API key in the settings panel first.";
             }
@@ -1381,6 +1385,20 @@ When user shares difficult content, focus on their feelings about it rather than
                 { role: 'user', content: userMessage }
             ];
 
+            const requestBody = {
+                model: API_CONFIG.model,
+                max_tokens: 150,
+                system: getSystemPrompt(),
+                messages: messages
+            };
+
+            console.log('📤 API Request:', {
+                endpoint: API_CONFIG.endpoint,
+                model: API_CONFIG.model,
+                messageCount: messages.length,
+                systemPrompt: getSystemPrompt().substring(0, 100) + '...'
+            });
+
             try {
                 const response = await fetch(API_CONFIG.endpoint, {
                     method: 'POST',
@@ -1389,29 +1407,30 @@ When user shares difficult content, focus on their feelings about it rather than
                         'anthropic-version': '2023-06-01',
                         'x-api-key': API_CONFIG.apiKey
                     },
-                    body: JSON.stringify({
-                        model: API_CONFIG.model,
-                        max_tokens: 150,
-                        system: getSystemPrompt(),
-                        messages: messages
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
+                console.log('📥 API Response Status:', response.status);
+
                 if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ API Error Response:', errorText);
+                    
                     if (response.status === 401) {
                         return "Your API key appears to be invalid. Please check your configuration.";
                     } else if (response.status === 429) {
                         return "Rate limit reached. What would you like to explore while we wait?";
                     } else {
-                        throw new Error(`API Error: ${response.status}`);
+                        return `API Error (${response.status}): ${errorText}`;
                     }
                 }
 
                 const data = await response.json();
+                console.log('✅ API Success:', data);
                 return data.content[0].text;
             } catch (error) {
-                console.error('Claude API Error:', error);
-                return "I'm having trouble connecting right now. What would you like to explore while we wait?";
+                console.error('💥 Claude API Error:', error);
+                return `Connection error: ${error.message}`;
             }
         }
 
@@ -1593,6 +1612,34 @@ When user shares difficult content, focus on their feelings about it rather than
             if (e.key === 'Enter') {
                 apiSaveBtn.click();
             }
+        });
+
+        apiTestBtn.addEventListener('click', async () => {
+            apiTestBtn.textContent = 'Testing...';
+            apiTestBtn.disabled = true;
+            
+            try {
+                const testResponse = await callClaudeAPI('Hello, this is a test message.');
+                console.log('🧪 Test Result:', testResponse);
+                
+                if (testResponse.includes('API Error') || testResponse.includes('Connection error')) {
+                    apiTestBtn.textContent = 'Failed';
+                    apiTestBtn.style.background = '#e74c3c';
+                } else {
+                    apiTestBtn.textContent = 'Success!';
+                    apiTestBtn.style.background = '#27ae60';
+                }
+            } catch (error) {
+                console.error('Test failed:', error);
+                apiTestBtn.textContent = 'Failed';
+                apiTestBtn.style.background = '#e74c3c';
+            }
+            
+            setTimeout(() => {
+                apiTestBtn.textContent = 'Test';
+                apiTestBtn.style.background = '#e67e22';
+                apiTestBtn.disabled = false;
+            }, 3000);
         });
 
         fontSizeSlider.addEventListener('input', (e) => {
