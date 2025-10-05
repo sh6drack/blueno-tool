@@ -935,7 +935,8 @@
         <main class="main-content">
             <div class="chat-header">
                 <div class="disclaimer">
-                    ⚠️ This is a research prototype demonstrating psychodynamic AI techniques. Not a replacement for professional therapy.
+                    ⚠️ This is a research prototype demonstrating psychodynamic AI techniques. Not a replacement for professional therapy.<br>
+                    Supports Claude, OpenAI, and Gemini APIs. Auto-detects provider from key format.
                 </div>
             </div>
 
@@ -1045,9 +1046,9 @@
             <div class="settings-card">
                 <h3>API Configuration</h3>
                 <div class="setting-group">
-                    <div class="setting-label">Claude API Key</div>
+                    <div class="setting-label">AI API Key</div>
                     <div style="display: flex; gap: 8px;">
-                        <input type="text" class="api-input" id="apiKey" placeholder="Paste your Claude API key here..." style="flex: 1;">
+                        <input type="text" class="api-input" id="apiKey" placeholder="Claude: sk-ant-... | OpenAI: sk-... | Gemini: AIza..." style="flex: 1;">
                         <button class="api-save-btn" id="apiSaveBtn">Save</button>
                         <button class="api-save-btn" id="apiTestBtn" style="background: #e67e22;">Test</button>
                     </div>
@@ -1079,12 +1080,31 @@
     </div>
 
     <script>
-        // Configuration and state
+        // Configuration and state  
         let API_CONFIG = {
             apiKey: '',
-            endpoint: 'https://api.anthropic.com/v1/messages',
-            model: 'claude-3-5-sonnet-20241022'
+            provider: 'auto', // 'auto', 'claude', 'openai', or 'gemini'
+            claude: {
+                endpoint: 'https://api.anthropic.com/v1/messages',
+                model: 'claude-3-haiku-20240307'
+            },
+            openai: {
+                endpoint: 'https://api.openai.com/v1/chat/completions',
+                model: 'gpt-3.5-turbo'
+            },
+            gemini: {
+                endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent',
+                model: 'gemini-pro'
+            }
         };
+
+        // Auto-detect provider based on API key format
+        function detectProvider(apiKey) {
+            if (apiKey.startsWith('sk-ant-')) return 'claude';
+            if (apiKey.startsWith('sk-') || apiKey.startsWith('org-')) return 'openai';
+            if (apiKey.startsWith('AIza')) return 'gemini';
+            return 'claude'; // default
+        }
 
         let chatSessions = [];
         let currentChatId = null;
@@ -1366,13 +1386,19 @@ ${intensityModifier}
 When user shares difficult content, focus on their feelings about it rather than the content itself. Stay curious about what the user is NOT saying. Be brief and thought-provoking.`;
         }
 
-        // Claude API integration
-        async function callClaudeAPI(userMessage) {
+        // Universal AI API integration
+        async function callAIAPI(userMessage) {
             console.log('🔑 API Key check:', API_CONFIG.apiKey ? 'Present' : 'Missing');
             
             if (!API_CONFIG.apiKey) {
-                return "Please configure your Claude API key in the settings panel first.";
+                return "Please configure your API key in the settings panel first.";
             }
+
+            // Auto-detect provider if set to auto
+            const provider = API_CONFIG.provider === 'auto' ? detectProvider(API_CONFIG.apiKey) : API_CONFIG.provider;
+            const config = API_CONFIG[provider];
+            
+            console.log('🤖 Using provider:', provider);
 
             const currentChat = getCurrentChat();
             const chatHistory = currentChat ? currentChat.messages.map(msg => ({
@@ -1380,33 +1406,62 @@ When user shares difficult content, focus on their feelings about it rather than
                 content: msg.content
             })) : [];
 
-            const messages = [
-                ...chatHistory,
-                { role: 'user', content: userMessage }
-            ];
-
-            const requestBody = {
-                model: API_CONFIG.model,
-                max_tokens: 150,
-                system: getSystemPrompt(),
-                messages: messages
-            };
-
-            console.log('📤 API Request:', {
-                endpoint: API_CONFIG.endpoint,
-                model: API_CONFIG.model,
-                messageCount: messages.length,
-                systemPrompt: getSystemPrompt().substring(0, 100) + '...'
-            });
-
             try {
-                const response = await fetch(API_CONFIG.endpoint, {
-                    method: 'POST',
-                    headers: {
+                let requestBody, headers, endpoint;
+
+                if (provider === 'claude') {
+                    const messages = [...chatHistory, { role: 'user', content: userMessage }];
+                    requestBody = {
+                        model: config.model,
+                        max_tokens: 150,
+                        system: getSystemPrompt(),
+                        messages: messages
+                    };
+                    headers = {
                         'Content-Type': 'application/json',
                         'anthropic-version': '2023-06-01',
                         'x-api-key': API_CONFIG.apiKey
-                    },
+                    };
+                    endpoint = config.endpoint;
+                } else if (provider === 'openai') {
+                    const messages = [
+                        { role: 'system', content: getSystemPrompt() },
+                        ...chatHistory,
+                        { role: 'user', content: userMessage }
+                    ];
+                    requestBody = {
+                        model: config.model,
+                        max_tokens: 150,
+                        messages: messages
+                    };
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_CONFIG.apiKey}`
+                    };
+                    endpoint = config.endpoint;
+                } else if (provider === 'gemini') {
+                    const prompt = `${getSystemPrompt()}\n\nConversation history:\n${chatHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}\n\nUser: ${userMessage}\n\nAssistant:`;
+                    requestBody = {
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }],
+                        generationConfig: {
+                            maxOutputTokens: 150
+                        }
+                    };
+                    headers = {
+                        'Content-Type': 'application/json'
+                    };
+                    endpoint = `${config.endpoint}?key=${API_CONFIG.apiKey}`;
+                }
+
+                console.log('📤 API Request:', { provider, endpoint: endpoint.split('?')[0], model: config.model });
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: headers,
                     body: JSON.stringify(requestBody)
                 });
 
@@ -1427,9 +1482,18 @@ When user shares difficult content, focus on their feelings about it rather than
 
                 const data = await response.json();
                 console.log('✅ API Success:', data);
-                return data.content[0].text;
+
+                // Extract response based on provider
+                if (provider === 'claude') {
+                    return data.content[0].text;
+                } else if (provider === 'openai') {
+                    return data.choices[0].message.content;
+                } else if (provider === 'gemini') {
+                    return data.candidates[0].content.parts[0].text;
+                }
+
             } catch (error) {
-                console.error('💥 Claude API Error:', error);
+                console.error('💥 AI API Error:', error);
                 return `Connection error: ${error.message}`;
             }
         }
@@ -1568,7 +1632,7 @@ When user shares difficult content, focus on their feelings about it rather than
 
             // Show typing indicator briefly for better UX
             setTimeout(async () => {
-                const response = await callClaudeAPI(text);
+                const response = await callAIAPI(text);
                 hideTypingIndicator();
                 addMessage(response);
                 sendBtn.disabled = false;
@@ -1619,7 +1683,7 @@ When user shares difficult content, focus on their feelings about it rather than
             apiTestBtn.disabled = true;
             
             try {
-                const testResponse = await callClaudeAPI('Hello, this is a test message.');
+                const testResponse = await callAIAPI('Hello, this is a test message.');
                 console.log('🧪 Test Result:', testResponse);
                 
                 if (testResponse.includes('API Error') || testResponse.includes('Connection error')) {
